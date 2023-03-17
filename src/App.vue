@@ -1,7 +1,13 @@
 <script setup lang="ts">
 // import { ref } from 'vue';
 // import type {Ref} from "vue";
-// import {RouterView} from "vue-router";
+import { RouterView } from "vue-router";
+
+import { useAuthStore } from "./stores/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/index";
+import Header from "./components/organisms/Header.vue";
+import { computed } from "vue";
 
 // let id = 0;
 
@@ -34,7 +40,6 @@
 //   tasks.value.splice(index, 1);
 // };
 
-
 // import { supabase } from '../supabase';
 // import { useAuthStore } from './stores/auth';
 // const auth = useAuthStore();
@@ -46,10 +51,31 @@
 //   if (event == 'SIGNED_OUT') auth.clearUser();
 // });
 
+// store呼び出し
+const authStore = useAuthStore();
+// console.log(authStore.currentUser.auth.uid);
+
+//
+// authStore.setUser(getAuth());
+
+// サインインとサインアウトのイベントを監視する
+onAuthStateChanged(auth, (currentUser) => {
+  if (currentUser) {
+    authStore.setUser(currentUser);
+    // computed(() => {
+    //   return authStore.getUid(currentUser.uid);
+    // });
+    authStore.getUid(currentUser.uid);
+    console.log(`ログイン状態`);
+  } else {
+    authStore.clearUser();
+    console.log("ログアウト状態");
+  }
+});
 </script>
 
 <template>
-  <header>Header</header>
+  <Header />
   <main>
     <RouterView />
   </main>
