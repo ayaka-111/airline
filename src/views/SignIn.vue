@@ -24,12 +24,32 @@ const loginButton = async () => {
 
 <template>
   <h1>ログイン</h1>
-  <form @submit.prevent>
-    メールアドレス：
-    <input type="email" v-model="user.email"/>
-    パスワード：
-    <input type="password" v-model="user.password
-    "/>
-    <button @click="loginButton">ログイン</button>
-  </form>
+  <v-form @submit.prevent>
+    <!-- メールアドレス： -->
+    <!-- <input type="email" v-model="user.email"/> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Email address"
+        placeholder="johndoe@gmail.com"
+        type="email"
+        v-model="user.email"
+        hint="登録済みのメールアドレスを入力してください"
+      ></v-text-field>
+    </v-responsive>
+    <!-- パスワード： -->
+    <!-- <input type="password" v-model="user.password
+    "/> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Password"
+        placeholder="john123"
+        type="password"
+        v-model="user.password"
+      ></v-text-field>
+    </v-responsive>
+    <!-- <button @click="loginButton">ログイン</button> -->
+    <v-btn rounded="pill" color="#4682B4" @click="loginButton">ログイン</v-btn>
+  </v-form>
 </template>

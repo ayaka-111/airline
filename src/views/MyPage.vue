@@ -39,4 +39,7 @@ getUser();
   <h1>マイページ</h1>
   <p>{{ currentUser }}</p>
   <div>{{ user?.first_name }}</div>
+  <div>
+    <p>予約一覧</p>
+  </div>
 </template>
