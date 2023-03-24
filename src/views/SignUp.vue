@@ -46,20 +46,6 @@ let userData: {
   password: "",
   confirmPassword: "",
 });
-// const email = ref("");
-// const firstName = ref("");
-// const lastName = ref("");
-// const dateOfBirth= ref();
-// const gender = ref();
-
-// const nationality = ref("");
-// const zipCode = ref("");
-// const prefecture = ref("");
-// const city = ref("");
-// const address = ref("");
-
-// const phone = ref("");
-// const password = ref("");
 
 const router = useRouter();
 
@@ -71,14 +57,6 @@ const router = useRouter();
 
 // getUsers();
 
-// ログイン状態の処理をここに書く(もしログイン状態でこの画面を開かれたらMyPageに遷移する。しかし、注文中に開かれた場合は注文確認の画面に遷移する)
-// const authStore = useAuthStore();
-// const currentUser = computed(():string => {
-//       return authStore.uid;
-//     });
-
-//     console.log(currentUser);
-
 // firebaseの会員登録も追加する
 const addUser = async () => {
   try {
@@ -87,8 +65,8 @@ const addUser = async () => {
       auth,
       userData.email,
       userData.password
-    ).then(async() => {
-      const currentUserId: string | undefined = auth.currentUser?.uid
+    ).then(async () => {
+      const currentUserId: string | undefined = auth.currentUser?.uid;
 
       const response = await fetch("http://localhost:3000/users", {
         method: "POST",
@@ -109,15 +87,11 @@ const addUser = async () => {
           // address: address.value,
           phone: userData.phone,
         }),
-      })
-      // .then(()=>{
+      });
       const data = await response.json();
       users.value.push(data);
-
-      // task.value = "";
-      // })
       // router.push({ name: "myPage", query: { email: userData.email } });
-    // })
+      // })
       router.push("/myPage");
     });
   } catch (error) {
@@ -133,30 +107,55 @@ const addUser = async () => {
 
 <template>
   <h1>会員登録</h1>
-  <ul>
-    <!-- <li v-for="user in users" :key="user.id"> -->
-    <!-- :style="user.completed ? 'text-decoration:line-through' : ''" -->
-    <!-- <span><input type="checkbox" v-model="user.completed" /></span> -->
-    <!-- <span>{{ task.task }}</span> -->
-    <!-- <span>{{ user.first_name }}{{ user.last_name }}</span> -->
-    <!-- <button @click="deleteTask(user.id)">削除</button> -->
-    <!-- </li> -->
-  </ul>
-  <form @submit.prevent="addUser">
-    <div>
+  <v-form @submit.prevent="addUser">
+    <!-- <div>
       <label for="firstName">FirstName:</label>
       <input type="text" v-model="userData.firstName" />
-    </div>
-    <div>
+    </div> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="First Name"
+        placeholder="John"
+        type="text"
+        v-model="userData.firstName"
+        hint="パスポート記載のとおり入力してください"
+      ></v-text-field>
+    </v-responsive>
+    <!-- <div>
       <label for="lastName">LastName:</label>
       <input type="text" v-model="userData.lastName" />
-    </div>
-    <div>
+    </div> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Last Name"
+        placeholder="Smith"
+        type="text"
+        v-model="userData.lastName"
+        hint="パスポート記載のとおり入力してください"
+      ></v-text-field>
+    </v-responsive>
+    <!-- <div>
       <p>日付{{ new Date(userData.dateOfBirth).toLocaleString() }}</p>
       <label for="dateOfBirth">Date of birth:</label>
       <input type="date" v-model="userData.dateOfBirth" />
-    </div>
-    <div>
+    </div> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Birth of Date"
+        type="date"
+        v-model="userData.dateOfBirth"
+      ></v-text-field>
+    </v-responsive>
+    <v-responsive class="mx-auto" max-width="344">
+      <v-radio-group inline>
+        <v-radio label="Male" value="male" name="gender"  v-model="userData.gender"></v-radio>
+        <v-radio label="Female" value="female" name="gender"  v-model="userData.gender"></v-radio>
+      </v-radio-group>
+    </v-responsive>
+    <!-- <div>
       Gender:
       <input
         type="radio"
@@ -174,25 +173,64 @@ const addUser = async () => {
         v-model="userData.gender"
       />
       <label for="female">Female</label>
-    </div>
-    <div>
+    </div> -->
+    <!-- <div>
       <label for="email">Email:</label>
       <input type="text" v-model="userData.email" />
-    </div>
-    <div>
+    </div> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Email address"
+        placeholder="johndoe@gmail.com"
+        type="email"
+        v-model="userData.email"
+      ></v-text-field>
+    </v-responsive>
+    <!-- <div>
       <label for="phone">Phone:</label>
       <input type="text" v-model="userData.phone" />
-    </div>
-    <div>
+    </div> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Phone"
+        placeholder="09012345678"
+        type="text"
+        v-model="userData.phone"
+        hint="ハイフン不要"
+      ></v-text-field>
+    </v-responsive>
+    <!-- <div>
       <label for="password">Password:</label>
       <input type="password" v-model="userData.password" />
-    </div>
-    <div>
+    </div> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Password"
+        placeholder="john123"
+        type="password"
+        v-model="userData.password"
+        hint="半角英数字8文字以上20文字以下"
+      ></v-text-field>
+    </v-responsive>
+    <!-- <div>
       <label for="confirmPassword">confirmPassword:</label>
       <input type="confirmPassword" v-model="userData.confirmPassword" />
-    </div>
+    </div> -->
+    <v-responsive class="mx-auto" max-width="344">
+      <v-text-field
+        hide-details="auto"
+        label="Confirm Password"
+        placeholder="john123"
+        type="password"
+        v-model="userData.confirmPassword"
+        hint="確認のためもう一度入力してください"
+      ></v-text-field>
+    </v-responsive>
     <div>
-      <button type="submit">登録</button>
+      <v-btn rounded="pill" color="#4682B4" type="submit">登録</v-btn>
     </div>
-  </form>
+  </v-form>
 </template>

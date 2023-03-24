@@ -39,6 +39,55 @@ const routeSettings: RouteRecordRaw[] = [
       requiresAuth: true,
     },
   },
+	{
+    path: "/guest",
+    name: "GuestInfo",
+    component: () => {
+      return import("@/views/guest/GuestInfo.vue");
+    },
+  },
+	{
+    path: "/reference",
+    name: "Reference",
+    component: () => {
+      return import("@/views/guest/Reference.vue");
+    },
+  },
+	{
+    path: "/referenceForm",
+    name: "ReferenceForm",
+    component: () => {
+      return import("@/views/guest/ReferenceForm.vue");
+    },
+  },
+	{
+    path: "/completed",
+    name: "Completed",
+    component: () => {
+      return import("@/views/reservation/completed.vue");
+    },
+  },
+	{
+    path: "/confirmation",
+    name: "Confirmation",
+    component: () => {
+      return import("@/views/reservation/confirmation.vue");
+    },
+  },
+	{
+    path: "/finalConfirmation",
+    name: "FinalConfirmation",
+    component: () => {
+      return import("@/views/reservation/FinalConfirmation.vue");
+    },
+  },
+	{
+    path: "/searchResult",
+    name: "SearchResult",
+    component: () => {
+      return import("@/views/reservation/SearchResults.vue");
+    },
+  },
   // {
   // 	path: "/member/detail/:id",
   // 	name: "MemberDetail",

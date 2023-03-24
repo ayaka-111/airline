@@ -75,8 +75,10 @@ onAuthStateChanged(auth, (currentUser) => {
 </script>
 
 <template>
-  <Header />
-  <main>
+  <v-app>
+  <Header></Header>
+  <v-main>
     <RouterView />
-  </main>
+  </v-main>
+</v-app>
 </template>
