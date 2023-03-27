@@ -1,11 +1,36 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Ref } from "vue";
+import { watch } from "vue";
 
-// この2つを検索結果に引き継ぐ
-// 入力された日付と人数を保持
-const date = ref();
+// この4つを検索結果に引き継ぐ
+const to = ref("那覇");
+const from = ref("羽田");
+// 入力された人数と日付を保持
 const numberOfPeople: Ref<number> = ref(0);
+const date = ref();
+
+// 行き先反転
+const destinationArrow = ref(true);
+
+// 行き先反転ボタン
+const destinationArrowBtn = () => {
+  destinationArrow.value = !destinationArrow.value;
+  console.log(destinationArrow.value);
+  from.value = "那覇";
+  console.log(from.value);
+  to.value = "羽田";
+  console.log(to.value);
+};
+watch(destinationArrow, () => {
+  if (destinationArrow.value) {
+    to.value = "那覇";
+    from.value = "羽田";
+  } else {
+    to.value = "羽田";
+    from.value = "那覇";
+  }
+});
 
 // 人数プラスボタン
 const peoplePlusBtn = () => {
@@ -21,7 +46,7 @@ const peopleMinusBtn = () => {
 };
 // 検索ボタン
 const search = () => {
-  console.log("検索！");
+  console.log(`出発地：${from.value}到着地：${to.value}人数：${numberOfPeople.value}日付：${date.value}`);
 };
 </script>
 
@@ -41,33 +66,68 @@ const search = () => {
 
   <div class="searchContent">
     <div class="searchItems">
-      <div class="searchText">
-        <p class="searchTitle">出発地</p>
-        <p>
-          <v-icon
-            icon="mdi-airplane-takeoff"
-            color="#3498db"
-            class="airplane-icon"
-          ></v-icon
-          >羽田
-        </p>
-      </div>
-      <v-icon
-        icon="mdi-arrow-right-thick"
-        size="x-large"
-        color="#3498db"
-      ></v-icon>
-      <div class="searchText">
-        <p class="searchTitle">到着地</p>
-        <p>
-          <v-icon
-            icon="mdi-airplane-landing"
-            color="#3498db"
-            class="airplane-icon"
-          ></v-icon
-          >那覇
-        </p>
-      </div>
+      <template v-if="destinationArrow">
+        <div class="searchText">
+          <p class="searchTitle">出発地</p>
+          <p>
+            <v-icon
+              icon="mdi-airplane-takeoff"
+              color="#3498db"
+              class="airplane-icon"
+            ></v-icon
+            >{{ from }}
+          </p>
+        </div>
+        <v-btn
+          icon="mdi-swap-horizontal-bold"
+          variant="text"
+          color="#3498db"
+          size="x-large"
+          @click="destinationArrowBtn"
+        ></v-btn>
+        <div class="searchText">
+          <p class="searchTitle">到着地</p>
+          <p>
+            <v-icon
+              icon="mdi-airplane-landing"
+              color="#3498db"
+              class="airplane-icon"
+            ></v-icon
+            >{{ to }}
+          </p>
+        </div>
+      </template>
+      <template v-else>
+        <div class="searchText">
+          <p class="searchTitle">出発地</p>
+          <p>
+            <v-icon
+              icon="mdi-airplane-takeoff"
+              color="#3498db"
+              class="airplane-icon"
+            ></v-icon
+            >{{ from }}
+          </p>
+        </div>
+        <v-btn
+          icon="mdi-swap-horizontal-bold"
+          variant="text"
+          color="#3498db"
+          size="x-large"
+          @click="destinationArrowBtn"
+        ></v-btn>
+        <div class="searchText">
+          <p class="searchTitle">到着地</p>
+          <p>
+            <v-icon
+              icon="mdi-airplane-landing"
+              color="#3498db"
+              class="airplane-icon"
+            ></v-icon
+            >{{ to }}
+          </p>
+        </div>
+      </template>
       <v-responsive max-width="180">
         <div class="peopleField">
           <p>人数</p>
@@ -96,7 +156,9 @@ const search = () => {
         ></v-text-field>
       </v-responsive>
     </div>
-    <v-btn prepend-icon="mdi-magnify" class="searchBtn" @click="search">検索する</v-btn>
+    <v-btn prepend-icon="mdi-magnify" class="searchBtn" @click="search"
+      >検索する</v-btn
+    >
   </div>
 </template>
 
