@@ -25,7 +25,7 @@ const currentUser = computed(
 
 // ログイン認証して自分のidを指定する
 const getUser = async () => {
-  const response = await fetch(`http://localhost:3000/users/${currentUser}`);
+  const response = await fetch(`http://localhost:3000/users/${currentUser.value}`);
   const data = await response.json();
   user.value = data;
 };
@@ -38,8 +38,8 @@ getUser();
 <template>
   <h1>マイページ</h1>
   <p>{{ currentUser }}</p>
-  <div>{{ user?.first_name }}</div>
+  <div>名前：{{ user?.first_name }}</div>
   <div>
-    <p>予約一覧</p>
+    <h2>予約一覧</h2>
   </div>
 </template>
