@@ -8,6 +8,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/index";
 import Header from "./components/organisms/Header.vue";
 import { computed } from "vue";
+// import { useReservationStore } from "./stores/reservation";
 
 // let id = 0;
 
@@ -55,7 +56,6 @@ import { computed } from "vue";
 const authStore = useAuthStore();
 // console.log(authStore.currentUser.auth.uid);
 
-//
 // authStore.setUser(getAuth());
 
 // サインインとサインアウトのイベントを監視する

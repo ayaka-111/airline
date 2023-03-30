@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
 import type { Ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useReservationStore } from "../../stores/reservation";
+import SelectedBtn from "../../components/atoms/button/SelectedBtn.vue";
 
 interface Reservations {
   id: string;
@@ -37,16 +39,20 @@ const flightNo: Ref<boolean> = ref(true);
 const seatsLeft1: Ref<string | number | undefined> = ref("");
 const seatsLeft2: Ref<string | number | undefined> = ref("");
 const seatsLeft3: Ref<string | number | undefined> = ref("");
-const seatsLeft4: Ref<string | number | undefined> = ref();
-const seatsLeft5: Ref<string | number | undefined> = ref();
-const seatsLeft6: Ref<string | number | undefined> = ref();
+const seatsLeft4: Ref<string | number | undefined> = ref("");
+const seatsLeft5: Ref<string | number | undefined> = ref("");
+const seatsLeft6: Ref<string | number | undefined> = ref("");
 
+// selectedBtnに渡すために使用
+const conditionData = ref();
 
 onMounted(() => {
   // TOPから検索条件(from/to/passenger/flight_date)を受け取る
   console.log(route.query);
   const condition = route.query;
-  console.log(typeof condition.flight_date);
+  conditionData.value = condition;
+
+  console.log(condition.passenger);
 
   // flightsテーブルの該当便取得
   fetch(
@@ -75,7 +81,7 @@ onMounted(() => {
           // 入力した日付とデータの日付の表記を合わせる
           // テーブルの日付を文字列に変換
           const stringDate = date.flight_date.toString();
-          console.log(stringDate)
+          console.log(stringDate);
 
           return stringDate === condition.flight_date;
         });
@@ -137,7 +143,7 @@ onMounted(() => {
       }, 0);
       // 20を超えるかどうか判断
       if (total1 >= 20 || total1 + Number(condition.passenger) > 20) {
-        seatsLeft1.value= "満席";
+        seatsLeft1.value = "満席";
       } else {
         seatsLeft1.value = 20 - total1;
       }
@@ -195,17 +201,24 @@ onMounted(() => {
   <div v-for="flight in flightList" v-bind:key="flight.id">
     <div>{{ flight.flight }}</div>
     <div>{{ flight.departure_time }}-{{ flight.arrival_time }}</div>
-    <div>{{ flight.price }}</div>
+    <!-- <div>{{ flight.price }}</div> -->
+    <SelectedBtn
+      :flight_id="flight.id"
+      :flight="flight.flight"
+      :date="conditionData.flight_date"
+      :passenger="conditionData.passenger"
+      :price="flight.price"
+    />
   </div>
 
   <div v-if="flightNo">
-    <div>HN0900 残席{{ seatsLeft1 }}</div>
-    <div>HN1300 残席{{ seatsLeft2 }}</div>
-    <div>HN1800 残席{{ seatsLeft3 }}</div>
+    <div>HN0900{{ seatsLeft1 }}</div>
+    <div>HN1300 {{ seatsLeft2 }}</div>
+    <div>HN1800 {{ seatsLeft3 }}</div>
   </div>
   <div v-else>
-    <div>NH1000 残席{{ seatsLeft4 }}</div>
-    <div>NH1400 残席{{ seatsLeft5 }}</div>
-    <div>NH1900 残席{{ seatsLeft6 }}</div>
+    <div>NH1000 {{ seatsLeft4 }}</div>
+    <div>NH1400 {{ seatsLeft5 }}</div>
+    <div>NH1900 {{ seatsLeft6 }}</div>
   </div>
 </template>
