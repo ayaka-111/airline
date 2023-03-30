@@ -64,14 +64,14 @@ const routeSettings: RouteRecordRaw[] = [
     path: "/completed",
     name: "Completed",
     component: () => {
-      return import("@/views/reservation/completed.vue");
+      return import("@/views/reservation/Completed.vue");
     },
   },
 	{
     path: "/confirmation",
     name: "Confirmation",
     component: () => {
-      return import("@/views/reservation/confirmation.vue");
+      return import("@/views/reservation/Confirmation.vue");
     },
   },
 	{
@@ -86,6 +86,13 @@ const routeSettings: RouteRecordRaw[] = [
     name: "SearchResult",
     component: () => {
       return import("@/views/reservation/SearchResults.vue");
+    },
+  },
+  {
+    path: "/passenger",
+    name: "PassengerInfo",
+    component: () => {
+      return import("@/views/reservation/PassengerInfo.vue");
     },
   },
   // {

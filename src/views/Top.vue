@@ -82,7 +82,6 @@ const search = () => {
     path: "/searchResult",
     query: { from: from.value, to: to.value, passenger: numberOfPeople.value ,flight_date: changeStringDate,},
   });
-
 };
 </script>
 
