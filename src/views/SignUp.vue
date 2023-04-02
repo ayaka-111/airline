@@ -150,9 +150,9 @@ const addUser = async () => {
       ></v-text-field>
     </v-responsive>
     <v-responsive class="mx-auto" max-width="344">
-      <v-radio-group inline>
-        <v-radio label="Male" value="male" name="gender"  v-model="userData.gender"></v-radio>
-        <v-radio label="Female" value="female" name="gender"  v-model="userData.gender"></v-radio>
+      <v-radio-group inline v-model="userData.gender">
+        <v-radio label="Male" value="male" name="gender"></v-radio>
+        <v-radio label="Female" value="female" name="gender"></v-radio>
       </v-radio-group>
     </v-responsive>
     <!-- <div>

@@ -46,10 +46,12 @@ export default defineComponent({
 
     const selectedBtn = () => {
       // id・便名・人数・日付
-      (bookingStore as any).selectedFlightId(props.flight_id);
-      (bookingStore as any).selectedFlight(props.flight);
+      // (bookingStore as any).selectedFlightId(props.flight_id);
+      // (bookingStore as any).selectedFlight(props.flight);
       (bookingStore as any).selectedDate(props.date);
       (bookingStore as any).selectedPassengerNum(props.passenger);
+      (bookingStore as any).getFlight(props.flight_id);
+
       // 確認画面に遷移する
       router.push("/confirmation");
     };

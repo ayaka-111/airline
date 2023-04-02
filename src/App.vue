@@ -65,8 +65,12 @@ onAuthStateChanged(auth, (currentUser) => {
     // computed(() => {
     //   return authStore.getUid(currentUser.uid);
     // });
+    // uidをpiniaで管理
     authStore.getUid(currentUser.uid);
     console.log(`ログイン状態`);
+
+    // ログインユーザー情報をdbから取得しpiniaで管理
+    authStore.getUserData(currentUser.uid);
   } else {
     authStore.clearUser();
     console.log("ログアウト状態");
@@ -76,9 +80,9 @@ onAuthStateChanged(auth, (currentUser) => {
 
 <template>
   <v-app>
-  <Header></Header>
-  <v-main>
-    <RouterView />
-  </v-main>
-</v-app>
+    <Header></Header>
+    <v-main>
+      <RouterView />
+    </v-main>
+  </v-app>
 </template>

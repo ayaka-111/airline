@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import {getAuth, signInWithPopup} from "@firebase/auth";
+import { getAuth, signInWithPopup } from "@firebase/auth";
 
 interface User {
-  id: Number;
+  id: String;
   email: String;
   first_name: String;
   last_name: String;
@@ -13,15 +13,16 @@ interface User {
 
 // const auth = getAuth();
 
-
 export const useAuthStore = defineStore({
-  id:"auth",
+  id: "auth",
   state: () => ({
     // user: null,
     currentUser: null as User | null | any,
     uid: "",
+    userData: [] as User[],
   }),
-  getters: { //ログインしているかどうか判断
+  getters: {
+    //ログインしているかどうか判断
     // isLoggedIn: (state) => state.currentUser !== null,
     isLoggedIn: (state) => state.currentUser,
     // getUid: uid
@@ -33,15 +34,20 @@ export const useAuthStore = defineStore({
     //   }
     // }
     // サインインした場合
-    setUser(user:any) {
+    setUser(user: any) {
       this.currentUser = user;
     },
     // サインアウトした場合
-    clearUser(){
+    clearUser() {
       this.currentUser = null;
     },
-    getUid(userId:any){
+    getUid(userId: any) {
       this.uid = userId;
-    }
+    },
+    async getUserData(id: string) {
+      const response = await fetch(`http://localhost:3000/users/${id}`);
+      const data = await response.json();
+      this.userData = data;
+    },
   },
 });
