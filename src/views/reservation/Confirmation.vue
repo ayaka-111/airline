@@ -43,7 +43,7 @@ const nextBtn = () => {
 
 <template>
   <h1>確認画面</h1>
-  <div>便名{{ selectedFlight }}</div>
+  <div>便名{{ selectedFlight.flight }}</div>
   <div>日付{{ selectedDate }}</div>
   <div>人数{{ selectedPassenger }}</div>
   <div v-if="user === null">

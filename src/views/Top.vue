@@ -10,7 +10,7 @@ const router = useRouter();
 const to: Ref<string> = ref("那覇");
 const from: Ref<string> = ref("羽田");
 // 入力された人数と日付を保持
-const numberOfPeople: Ref<number> = ref(0);
+const numberOfPeople: Ref<number> = ref(1);
 const date = ref();
 
 // 行き先反転
@@ -43,44 +43,55 @@ const peoplePlusBtn = () => {
 };
 // 人数マイナスボタン
 const peopleMinusBtn = () => {
-  if (numberOfPeople.value > 0) {
+  if (numberOfPeople.value > 1) {
     numberOfPeople.value--;
   }
 };
+
+// 1ヶ月先までしか選択できないようにする
+const nowDateTime = new Date();
+const nowDate = ref<string>(nowDateTime.toISOString().slice(0, 10));
+const maximumReservableDays = new Date(
+  nowDateTime.setMonth(nowDateTime.getMonth() + 1)
+);
+const year = maximumReservableDays.getFullYear();
+const month = ("0" + (maximumReservableDays.getMonth() + 1)).slice(-2);
+const day = ("0" + maximumReservableDays.getDate()).slice(-2);
+const maximumReservableDate = `${year}-${month}-${day}`;
+
 // 検索ボタン
 const dataList = ref();
 const search = () => {
   console.log(
     `from：${from.value}to：${to.value}人数：${numberOfPeople.value}日付：${
-      date.value}new:${new Date(date.value)}`
+      date.value
+    }new:${new Date(date.value)}`
   );
 
-  // const getResults = () => {
-  //   const response = await // const data =
-  //   fetch(
-  //     `http://localhost:3000/searchReservations/?flight_date=${new Date(
-  //       date.value
-  //     )}&from=${from.value}&to=${to.value}`
-  //   );
-  //   //   {
-  //   //     method: "GET",
-  //   //     headers: { "Content-Type": "application/json" },
-  //   //   }
-  //   // ).then((res) => res.json());
-  //   const data = await response.json();
-  //   console.log(data);
-  //   dataList.value = data;
-  // };
-  // getResults();
-  // }
+  const getResults = async () => {
+    const response = await fetch(
+      `http://localhost:3000/searchReservations/?flight_date=${new Date(
+        date.value
+      )}&from=${from.value}&to=${to.value}`
+    );
+    const data = await response.json();
+    console.log(data);
+    dataList.value = data;
+  };
+  getResults();
 
   //  searchResultsで使いたい形に変換してから渡すために一旦日付型にしてその後文字列型に変換
-  const changeDate = new Date(date.value)
+  const changeDate = new Date(date.value);
   const changeStringDate = changeDate.toISOString();
   // searchResultsに遷移
   router.push({
     path: "/searchResult",
-    query: { from: from.value, to: to.value, passenger: numberOfPeople.value ,flight_date: changeStringDate,},
+    query: {
+      from: from.value,
+      to: to.value,
+      passenger: numberOfPeople.value,
+      flight_date: changeStringDate,
+    },
   });
 };
 </script>
@@ -171,7 +182,9 @@ const search = () => {
               icon="mdi-minus-circle-outline"
               variant="text"
               @click="peopleMinusBtn"
+              v-if="numberOfPeople >= 1"
             ></v-btn>
+            <v-bt icon="mdi-minus-circle-outline" variant="text" color="lightgray" v-else></v-bt>
             <p class="numberOfPeople">{{ numberOfPeople }}</p>
             <v-btn
               icon="mdi-plus-circle-outline"
@@ -188,6 +201,9 @@ const search = () => {
           variant="outlined"
           v-model="date"
           class="date"
+          :min="nowDate"
+          :max="maximumReservableDate"
+          required
         ></v-text-field>
       </v-responsive>
     </div>

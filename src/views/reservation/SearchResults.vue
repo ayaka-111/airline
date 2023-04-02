@@ -2,7 +2,6 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import type { Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useReservationStore } from "../../stores/reservation";
 import SelectedBtn from "../../components/atoms/button/SelectedBtn.vue";
 
 interface Reservations {

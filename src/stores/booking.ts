@@ -1,8 +1,17 @@
 import { defineStore } from "pinia";
-interface selectedFlight {
-  flightNo: string;
-  date: string;
-  passengerNum: number;
+// interface selectedFlight {
+//   flight_id: string;
+//   date: string;
+//   passengerNum: number;
+// }
+interface Flights {
+  id: number,
+  flight: string,
+  from: string,
+  to: string,
+  departure_time: string,
+  arrival_time: String,
+  price: number,
 }
 // export const useBookingStore = defineStore({
 //   id: "booking",
@@ -32,8 +41,9 @@ interface selectedFlight {
 export const useBookingStore = defineStore({
   id:"booking",
   state: () => ({
-    flight_id: 0,
-    flight: "",
+    // flight_id: 0,
+    // flight: "",
+    flight: [] as Flights[],
     date: "",
     passengerNum: 0,
   }),
@@ -43,17 +53,24 @@ export const useBookingStore = defineStore({
   //   // getUid: uid
   // },
   actions: {
-    selectedFlightId(id:number){
-      this.flight_id = id
-    },
-    selectedFlight(flight:string) {
-      this.flight = flight;
-    },
+    // selectedFlightId(id:number){
+    //   this.flight_id = id
+    // },
+    // selectedFlight(flight:string) {
+    //   this.flight = flight;
+    // },
     selectedDate(date:any){
       this.date = date;
     },
     selectedPassengerNum(num:number){
       this.passengerNum = num;
+    },
+    async getFlight(id:number) {
+      const response = await fetch(
+        `http://localhost:3000/flights/${id}`
+      );
+      const data = await response.json();
+      this.flight = data;
     }
   },
   persist: true,

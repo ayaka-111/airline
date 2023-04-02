@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import { reactive, ref } from "vue";
 import type { Ref } from "vue";
+import { usePassengerStore } from "../../stores/passenger";
 
 interface Passenger {
   id: String;
@@ -17,34 +18,39 @@ const router = useRouter();
 
 // 入力された値を保持
 let passengerData: {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
+  first_name: string;
+  last_name: string;
+  date_of_birth: Date | String;
   gender: string;
 } = reactive({
-  firstName: "",
-  lastName: "",
-  dateOfBirth: "",
+  first_name: "",
+  last_name: "",
+  date_of_birth: "",
   gender: "",
 });
 
 const addPassenger = async () => {
   try {
     // passengerテーブルに追加
-    const response = await fetch("http://localhost:3000/passengers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        first_name: passengerData.firstName,
-        last_name: passengerData.lastName,
-        date_of_birth: new Date(passengerData.dateOfBirth),
-        gender: passengerData.gender,
-      }),
-    });
-    const data = await response.json();
+    // const response = await fetch("http://localhost:3000/passengers", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     first_name: passengerData.firstName,
+    //     last_name: passengerData.lastName,
+    //     date_of_birth: new Date(passengerData.dateOfBirth),
+    //     gender: passengerData.gender,
+    //   }),
+    // });
+    // const data = await response.json();
+    // console.log(data.id);
 
+    // piniaに保存
+    const passengerStore = usePassengerStore();
+    // (passengerStore as any).getId(data.id)
+    (passengerStore as any).getPassenger(passengerData);
     // 最終確認画面に遷移
     router.push("/finalConfirmation");
   } catch (error) {
@@ -62,7 +68,7 @@ const addPassenger = async () => {
         label="First Name"
         placeholder="John"
         type="text"
-        v-model="passengerData.firstName"
+        v-model="passengerData.first_name"
         hint="パスポート記載のとおり入力してください"
       ></v-text-field>
     </v-responsive>
@@ -72,7 +78,7 @@ const addPassenger = async () => {
         label="Last Name"
         placeholder="Smith"
         type="text"
-        v-model="passengerData.lastName"
+        v-model="passengerData.last_name"
         hint="パスポート記載のとおり入力してください"
       ></v-text-field>
     </v-responsive>
@@ -81,24 +87,17 @@ const addPassenger = async () => {
         hide-details="auto"
         label="Birth of Date"
         type="date"
-        v-model="passengerData.dateOfBirth"
+        v-model="passengerData.date_of_birth"
       ></v-text-field>
     </v-responsive>
     <v-responsive class="mx-auto" max-width="344">
-      <v-radio-group inline>
+      <v-radio-group inline v-model="passengerData.gender">
+        <v-radio id="male" label="Male" value="male" name="gender"></v-radio>
         <v-radio
-        id="male"
-          label="Male"
-          value="male"
-          name="gender"
-          v-model="passengerData.gender"
-        ></v-radio>
-        <v-radio
-        id="female"
+          id="female"
           label="Female"
           value="female"
           name="gender"
-          v-model="passengerData.gender"
         ></v-radio>
       </v-radio-group>
     </v-responsive>
