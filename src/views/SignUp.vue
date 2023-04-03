@@ -47,7 +47,10 @@ let userData: {
   confirmPassword: "",
 });
 
-const router = useRouter();
+const router: any = useRouter();
+
+let referrer = router.referrer;
+console.log(referrer.path);
 
 // const getUsers = async () => {
 //   const response = await fetch("http://localhost:3000/users");
@@ -56,6 +59,8 @@ const router = useRouter();
 // };
 
 // getUsers();
+
+const authStore = useAuthStore();
 
 // firebaseの会員登録も追加する
 const addUser = async () => {
@@ -88,11 +93,18 @@ const addUser = async () => {
           phone: userData.phone,
         }),
       });
-      const data = await response.json();
-      users.value.push(data);
-      // router.push({ name: "myPage", query: { email: userData.email } });
-      // })
-      router.push("/myPage");
+      const data = await response.json()
+        // users.value.push(data)
+        // router.push({ name: "myPage", query: { email: userData.email } });
+        // })
+        // .then(() => {
+          if (referrer.path === "/confirmation") {
+            authStore.getUserData(data.id)
+            router.push("/passenger");
+          } else {
+            router.push("/myPage");
+          }
+        // });
     });
   } catch (error) {
     console.log(error);

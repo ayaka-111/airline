@@ -115,6 +115,11 @@ const router = createRouter({
   routes: routeSettings,
 });
 
+router.beforeEach((to, from, next) => {
+  router['referrer'] = from;
+  next()
+});
+
 // サインインしているかチェックし、していなければsignInにれダイレクトされる
 // router.beforeEach((to) => {
 //   const authStore = useAuthStore();
