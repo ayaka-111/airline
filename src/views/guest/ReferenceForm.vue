@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive } from "vue";
+import { useRouter } from "vue-router";
 
 const guest = reactive({
   date: "",
@@ -8,11 +9,17 @@ const guest = reactive({
   last_name: "",
 })
 
+const router = useRouter();
+
 // 予約内容を検索する
 // reservationsテーブルから該当のデータを検索
 // リアクティブデータ全てが検索するのに必須条件
 const referenceBtn = () => {
   console.log("照会")
+}
+
+const signIn = () => {
+  router.push("/signIn")
 }
 </script>
 
@@ -60,4 +67,5 @@ const referenceBtn = () => {
     </v-responsive>
     <v-btn rounded="pill" color="#4682B4" @click="referenceBtn">予約確認</v-btn>
   </v-form>
+  <v-btn @click="signIn">会員登録している方はこちら</v-btn>
 </template>

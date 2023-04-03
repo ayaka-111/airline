@@ -61,13 +61,13 @@ const authStore = useAuthStore();
 // サインインとサインアウトのイベントを監視する
 onAuthStateChanged(auth, (currentUser) => {
   if (currentUser) {
-    authStore.setUser(currentUser);
+    authStore.setUser(currentUser)
     // computed(() => {
     //   return authStore.getUid(currentUser.uid);
     // });
     // uidをpiniaで管理
     authStore.getUid(currentUser.uid);
-    console.log(`ログイン状態`);
+    console.log(`ログイン状態`)
 
     // ログインユーザー情報をdbから取得しpiniaで管理
     authStore.getUserData(currentUser.uid);

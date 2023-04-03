@@ -4,7 +4,35 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { reactive } from "vue";
 
-const router = useRouter();
+const router: any = useRouter();
+
+// beforeRouteEnter(to, from, next) {
+//     next(vm => {
+//         vm.prevRoute = from
+//     })
+//   }
+// const beforeRouteEnter = async (to, from, next) => {
+//   // ログインしていない場合は、ログインページにリダイレクト
+//   // if (!isLoggedIn()) {
+//   //   next('/login')
+//   // } else {
+//   //   next()
+//   // }
+
+//   next(vm => {
+//         vm.prevRoute = from
+//         console.log(vm.prevRoute.path)
+//     })
+
+//   console.log(to);
+//   console.log(from);
+//   console.log(next)
+// }
+
+// router.beforeEach(beforeRouteEnter);
+
+let referrer = router.referrer;
+console.log(referrer.path);
 
 // 入力された値を保持
 const user = reactive({ email: "", password: "" });
@@ -13,7 +41,13 @@ const loginButton = async () => {
   try {
     await signInWithEmailAndPassword(auth, user.email, user.password).then(
       () => {
-        router.push("/");
+        if (referrer.path === "/confirmation") {
+          router.push("/passenger");
+        } else if (referrer.path === "/referenceForm") {
+          router.push("/myPage");
+        } else {
+          router.push("/");
+        }
       }
     );
   } catch (error) {
