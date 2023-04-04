@@ -50,10 +50,17 @@ const peopleMinusBtn = () => {
 
 // 1ヶ月先までしか選択できないようにする
 const nowDateTime = new Date();
-const nowDate = ref<string>(nowDateTime.toISOString().slice(0, 10));
+// 当日
+// const nowDate = ref<string>(nowDateTime.toISOString().slice(0, 10));
+// 次の日
+const minimumReservableDays = new Date(nowDateTime.setDate(nowDateTime.getDate() + 1));
+const minYear = minimumReservableDays.getFullYear();
+const minMonth = ("0" + (minimumReservableDays.getMonth() + 1)).slice(-2);
+const minDay = ("0" + minimumReservableDays.getDate()).slice(-2);
+const minimumReservableDate = `${minYear}-${minMonth}-${minDay}`;
+// 1ヶ月後
 const maximumReservableDays = new Date(
-  nowDateTime.setMonth(nowDateTime.getMonth() + 1)
-);
+  nowDateTime.setMonth(nowDateTime.getMonth() + 1));
 const year = maximumReservableDays.getFullYear();
 const month = ("0" + (maximumReservableDays.getMonth() + 1)).slice(-2);
 const day = ("0" + maximumReservableDays.getDate()).slice(-2);
@@ -201,7 +208,7 @@ const search = () => {
           variant="outlined"
           v-model="date"
           class="date"
-          :min="nowDate"
+          :min="minimumReservableDate"
           :max="maximumReservableDate"
           required
         ></v-text-field>

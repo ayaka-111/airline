@@ -4,6 +4,7 @@ import type { Ref } from "vue";
 import { useAuthStore } from "../stores/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase/index";
+import { useRouter } from "vue-router";
 
 interface Users {
   id: string;
@@ -59,6 +60,8 @@ interface Reservations {
   passengers: Passengers[];
 }
 
+const router = useRouter();
+
 // const user: Ref<User | undefined> = ref();
 const reservations: Ref<Reservations[]> = ref([]);
 
@@ -107,6 +110,15 @@ onAuthStateChanged(auth, async (currentUser) => {
 //   });
 // };
 // getReservation();
+
+// const detail = () => {
+//   router.push({
+//     path: "/reference",
+//     query: {
+//       flight: ,
+//     },
+//   });
+// }
 </script>
 
 <template>
@@ -115,17 +127,113 @@ onAuthStateChanged(auth, async (currentUser) => {
   <div>
     <h2>予約一覧</h2>
     <div v-for="reservation in reservations" :key="reservation.id">
-      <p>予約日{{ reservation.appointment_date }}</p>
+      <RouterLink
+        v-bind:to="{ name: 'Reference', params: { id: reservation.id } }"
+      >
+        {{ reservation.flight.flight }}便
+      </RouterLink>
+      <p>予約日{{ new Date(reservation.appointment_date).toISOString() }}</p>
       <p>出発日{{ reservation.flight_date }}</p>
-      <p>{{ reservation.flight.flight }}便</p>
-      <p>
-        予約者名{{ reservation.users.first_name }}
-        {{ reservation.users.last_name }}
-      </p>
-      <template v-for="passenger in reservation.passengers" :key="passenger.id">
-        <p>搭乗者名{{ passenger.first_name }} {{ passenger.last_name }}</p>
-      </template>
-      <hr />
+
+      <!-- <p>
+              予約者名{{ reservation.users.first_name }}
+              {{ reservation.users.last_name }}
+            </p>
+            <p>合計金額{{ reservation.total_price }}</p>
+            <template
+              v-for="passenger in reservation.passengers"
+              :key="passenger.id">
+              <p>
+                搭乗者名{{ passenger.first_name }} {{ passenger.last_name }}
+              </p>
+            </template> -->
     </div>
   </div>
 </template>
+
+<style scoped>
+/* モーダルウィンドウを開く要素 */
+.modal_open_btn {
+  cursor: pointer;
+}
+/* モーダルウィンドウ要素 */
+.modal_contents {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  width: 100%;
+}
+/* モーダルウィンドウの背景要素 */
+.modal_contents_bg {
+  background: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+}
+/* モーダルウィンドウの中身*/
+.modal_contents_wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: #fff;
+  width: 25%;
+  height: 30%;
+  margin: auto;
+  transform: translate(-50%, -50%);
+  border-radius: 5%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.deleteBtn {
+  height: 33%;
+  color: red;
+  font-weight: bold;
+}
+.deleteModal_contents_wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  transform: translate(-50%, -50%);
+  border-radius: 5%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.deleteModal_title {
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.deleteText {
+  color: gray;
+}
+.deleteModal_deleteBtn {
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  color: red;
+  font-weight: bold;
+  height: 25%;
+}
+.deleteModal_close_btn {
+  cursor: pointer;
+  height: 25%;
+}
+.updateBtn {
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  height: 33%;
+}
+/* モーダルウィンドウを閉じる要素 */
+.modal_close_btn {
+  cursor: pointer;
+  height: 33%;
+}
+</style>
