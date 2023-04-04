@@ -39,6 +39,13 @@ const routeSettings: RouteRecordRaw[] = [
       requiresAuth: true,
     },
   },
+  {
+    path: "/reference/:id",
+    name: "Reference",
+    component: () => {
+      return import("@/views/Reference.vue");
+    },
+  },
 	{
     path: "/guest",
     name: "GuestInfo",
@@ -47,10 +54,10 @@ const routeSettings: RouteRecordRaw[] = [
     },
   },
 	{
-    path: "/reference",
-    name: "Reference",
+    path: "/guestReference",
+    name: "GuestReference",
     component: () => {
-      return import("@/views/guest/Reference.vue");
+      return import("@/views/guest/GuestReference.vue");
     },
   },
 	{
