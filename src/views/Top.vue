@@ -37,7 +37,7 @@ watch(destinationArrow, () => {
 
 // 人数プラスボタン
 const peoplePlusBtn = () => {
-  if (numberOfPeople.value < 20) {
+  if (numberOfPeople.value < 6) {
     numberOfPeople.value++;
   }
 };
@@ -67,29 +67,27 @@ const day = ("0" + maximumReservableDays.getDate()).slice(-2);
 const maximumReservableDate = `${year}-${month}-${day}`;
 
 // 検索ボタン
-const dataList = ref();
+// const dataList = ref();
 const search = () => {
   console.log(
-    `from：${from.value}to：${to.value}人数：${numberOfPeople.value}日付：${
-      date.value
-    }new:${new Date(date.value)}`
-  );
+    `from：${from.value}to：${to.value}人数：${numberOfPeople.value}日付：${date.value}new:${new Date(date.value)}`);
 
-  const getResults = async () => {
-    const response = await fetch(
-      `http://localhost:3000/searchReservations/?flight_date=${new Date(
-        date.value
-      )}&from=${from.value}&to=${to.value}`
-    );
-    const data = await response.json();
-    console.log(data);
-    dataList.value = data;
-  };
-  getResults();
+  // const getResults = async () => {
+  //   const response = await fetch(
+  //     `http://localhost:3000/searchReservations/?flight_date=${new Date(
+  //       date.value
+  //     )}&from=${from.value}&to=${to.value}`
+  //   );
+  //   const data = await response.json();
+  //   console.log(data);
+  //   dataList.value = data;
+  // };
+  // getResults();
 
   //  searchResultsで使いたい形に変換してから渡すために一旦日付型にしてその後文字列型に変換
   const changeDate = new Date(date.value);
   const changeStringDate = changeDate.toISOString();
+
   // searchResultsに遷移
   router.push({
     path: "/searchResult",
@@ -218,7 +216,7 @@ const search = () => {
       >検索する</v-btn
     >
   </div>
-  <div>{{ dataList }}</div>
+  <!-- <div>{{ dataList }}</div> -->
 </template>
 
 <style scoped>
