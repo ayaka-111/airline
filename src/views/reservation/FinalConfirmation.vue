@@ -17,6 +17,13 @@ interface User {
   phone: String;
 }
 
+interface PassengerPinia {
+  first_name: string;
+  last_name: string;
+  date_of_birth: Date;
+  gender: string;
+}
+
 // ログインユーザー情報
 const loginUser: Ref<User | undefined> = ref();
 const loginUserUid: Ref<any> = ref("");
@@ -82,6 +89,9 @@ const passengerData = computed(() => {
 });
 
 console.log(passengerData.value);
+passengerData.value.map((passenger:PassengerPinia)=>{
+  console.log(passenger.first_name)
+})
 
 // console.log(passengerId.value);
 // const getPassenger = async () => {
@@ -167,7 +177,7 @@ const confirmed = async () => {
         appointment_date: new Date(nowDate).toISOString(),
         payment_method_id: 1,
         payment_status_id: 1,
-        passengers: passengerData.value.id,
+        // passengers: [passengerData.value.id],
       }),
     });
     const reservationData = await response.json();
@@ -187,25 +197,29 @@ const confirmed = async () => {
       //   }
       // );
       // const updateUserData = await updateUser.json();
+      passengerData.value.map(async(passenger:PassengerPinia)=>{
 
-
-    const updatePassenger = await fetch("http://localhost:3000/passengers", {
+      // 搭乗者情報をpassengersに追加する
+    const addPassenger = await fetch("http://localhost:3000/passengers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      // あとで！！一つ一つではなく、配列をmap回しながら要素指定する必要がありそう
       body: JSON.stringify({
-        first_name: passengerData.value.first_name,
-        last_name: passengerData.value.last_name,
-        date_of_birth: new Date(passengerData.value.date_of_birth),
-        gender: passengerData.value.gender,
+        first_name: passenger.first_name,
+        last_name: passenger.last_name,
+        date_of_birth: new Date(passenger.date_of_birth),
+        gender: passenger.gender,
         reservation_id: reservationData.id,
       }),
     });
-    const updatePassengerData = await updatePassenger.json();
-    console.log(updatePassengerData);
+    const addPassengerData = await addPassenger.json();
+    console.log(addPassengerData);
+  })
   } else {
     console.log("ゲスト")
+    // reservationsに追加する
     const guestResponse = await fetch("http://localhost:3000/reservations", {
       method: "POST",
       headers: {
@@ -220,15 +234,15 @@ const confirmed = async () => {
         appointment_date: new Date(nowDate).toISOString(),
         payment_method_id: 1,
         payment_status_id: 1,
-        passengers: passengerData.value.id,
+        passengers: [passengerData.value.id],
       }),
     });
     const guestReservationData = await guestResponse.json();
     console.log(guestReservationData);
 
 
-    // passenger更新
-    const updateGuestPassenger = await fetch("http://localhost:3000/passengers", {
+    // passenger追加
+    const addGuestPassenger = await fetch("http://localhost:3000/passengers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -241,8 +255,8 @@ const confirmed = async () => {
         reservation_id: guestReservationData.id,
       }),
     });
-    const updateGuestPassengerData = await updateGuestPassenger.json();
-    console.log(updateGuestPassengerData);
+    const addGuestPassengerData = await addGuestPassenger.json();
+    console.log(addGuestPassengerData);
   }
 
   // Piniaリセット(bookingStore,passengerStore)
@@ -270,11 +284,12 @@ const confirmed = async () => {
   </div>
 
   <h2>搭乗者情報確認</h2>
-  <h3>搭乗者1</h3>
-  <p>名前：{{ passengerData.first_name }}　{{ passengerData.last_name }}</p>
-  <p>生年月日:{{ passengerData.date_of_birth }}</p>
-  <p>性別：{{ passengerData.gender }}</p>
-  <h3>搭乗者2</h3>
+  <div v-for="(passenger, index) in passengerData" :key="passenger">
+  <h3>搭乗者{{ index+1 }}</h3>
+  <p>名前：{{ passenger.first_name }}:&nbsp;{{ passenger.last_name }}</p>
+  <p>生年月日:{{ passenger.date_of_birth }}</p>
+  <p>性別：{{ passenger.gender }}</p>
+</div>
 
   <h2>予約内容確認</h2>
   <p>{{ flightData.flight }}便</p>
