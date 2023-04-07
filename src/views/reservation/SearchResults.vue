@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from "vue";
 import type { Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SelectedBtn from "../../components/atoms/button/SelectedBtn.vue";
+import TimeStamp from "../../components/atoms/TimeStamp.vue";
 
 interface Reservations {
   id: string;
@@ -45,6 +46,14 @@ const seatsLeft6: Ref<string | number | undefined> = ref("");
 // selectedBtnに渡すために使用
 const conditionData = ref();
 
+const loading = ref(true);
+
+const timestamp = reactive({
+  year: "",
+  month: "",
+  date: "",
+});
+
 onMounted(() => {
   // TOPから検索条件(from/to/passenger/flight_date)を受け取る
   console.log(route.query);
@@ -52,6 +61,13 @@ onMounted(() => {
   conditionData.value = condition;
 
   console.log(condition.passenger);
+  console.log(condition.flight_date);
+
+  // 時間表示変更
+  const date: any = new Date(condition.flight_date as any);
+  timestamp.year = date.getFullYear();
+  timestamp.month = date.getMonth() + 1;
+  timestamp.date = date.getDate();
 
   // flightsテーブルの該当便取得
   fetch(
@@ -191,33 +207,156 @@ onMounted(() => {
       } else {
         seatsLeft6.value = 20 - total6;
       }
+
+      loading.value = false;
     }); //then
 }); //onMounted
+console.log(flightList.value);
 </script>
 
 <template>
-  <h1>検索結果</h1>
-  <div v-for="flight in flightList" v-bind:key="flight.id">
-    <div>{{ flight.flight }}</div>
-    <div>{{ flight.departure_time }}-{{ flight.arrival_time }}</div>
-    <!-- <div>{{ flight.price }}</div> -->
-    <SelectedBtn
-      :flight_id="flight.id"
-      :flight="flight.flight"
-      :date="conditionData.flight_date"
-      :passenger="conditionData.passenger"
-      :price="flight.price"
-    />
-  </div>
+  <template v-if="loading">
+    <v-card height="190" class="text-center">
+      <v-progress-circular
+        :size="100"
+        indeterminate
+        color="#3498db"
+        class="mt-4"
+        >Loading...
+      </v-progress-circular>
+    </v-card>
+  </template>
+  <div v-else class="wrapper">
+    <div class="text-h4">
+      {{ conditionData.from }}&nbsp;ー&nbsp;{{ conditionData.to }}
+    </div>
+    <div class="mt-5 text-h6">
+      <!-- {{ timestamp.year }}/{{ timestamp.month }}/{{ timestamp.date }} -->
+      <TimeStamp :date="conditionData.flight_date" />
+    </div>
+    <div class="d-flex justify-space-between mt-8">
+      <div class="d-flex">
+        <v-icon icon="mdi-airplane" color="#3498db"></v-icon>
+        <p class="text-h6">直行便({{ flightList.length }})</p>
+      </div>
+      <p class="text-subtitle-2">下記の運賃は、1人の運賃(税込)です</p>
+    </div>
+    <div
+      v-for="flight in flightList"
+      v-bind:key="flight.id"
+      class="flightContents d-flex justify-space-around align-center"
+    >
+      <div>
+        <div class="font-weight-bold">
+          {{ flight.departure_time }}-{{ flight.arrival_time }}
+        </div>
+        <div>
+          <div class="d-flex align-sm-center mt-2 mx-2 toFromText">
+            <v-icon
+              icon="mdi-circle-outline"
+              color="#3498db"
+              size="x-small"
+            ></v-icon>
+            <p class="font-weight-bold text-subtitle-1">
+              {{ flight.from }}
+            </p>
+          </div>
+          <v-icon
+            icon="mdi-dots-vertical"
+            color="#3498db"
+            size="large"
+            class="dotLine"
+          ></v-icon>
+          <div class="d-flex align-sm-center mx-2 toFromText">
+            <v-icon
+              icon="mdi-circle-outline"
+              color="#3498db"
+              size="x-small"
+            ></v-icon>
+            <p class="font-weight-bold text-subtitle-1">{{ flight.to }}</p>
+          </div>
+        </div>
+        <!--to,dot,from -->
+      </div>
+      <!-- 時間と行き先-->
+      <div>
+        {{ flight.flight }}
+      </div>
+      <div>
+        <p>所要時間</p>
+        <p>
+          <v-icon icon="mdi-clock"></v-icon
+          ><span class="font-weight-bold">2h30</span>
+        </p>
+      </div>
+      <SelectedBtn
+        :flight_id="flight.id"
+        :flight="flight.flight"
+        :date="conditionData.flight_date"
+        :passenger="conditionData.passenger"
+        :price="flight.price"
+      />
+    </div>
+    <!-- v-for -->
 
-  <div v-if="flightNo">
-    <div>HN0900{{ seatsLeft1 }}</div>
-    <div>HN1300 {{ seatsLeft2 }}</div>
-    <div>HN1800 {{ seatsLeft3 }}</div>
-  </div>
-  <div v-else>
-    <div>NH1000 {{ seatsLeft4 }}</div>
-    <div>NH1400 {{ seatsLeft5 }}</div>
-    <div>NH1900 {{ seatsLeft6 }}</div>
+    <template v-if="flightNo">
+      <div class="seat seat1">
+        残席数<span class="font-weight-bold">{{ seatsLeft1 }}</span>
+      </div>
+      <div class="seat seat2">
+        残席数<span class="font-weight-bold">{{ seatsLeft2 }}</span>
+      </div>
+      <div class="seat seat3">
+        残席数<span class="font-weight-bold">{{ seatsLeft3 }}</span>
+      </div>
+    </template>
+    <template v-else>
+      <div class="seat seat1">
+        残席数<span class="font-weight-bold">{{ seatsLeft4 }}</span>
+      </div>
+      <div class="seat seat2">
+        残席数<span class="font-weight-bold">{{ seatsLeft5 }}</span>
+      </div>
+      <div class="seat seat3">
+        残席数<span class="font-weight-bold">{{ seatsLeft6 }}</span>
+      </div>
+    </template>
   </div>
 </template>
+
+<style scoped>
+.wrapper {
+  width: 75%;
+  margin: 0 auto;
+}
+.flightContents {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 1%;
+  position: relative;
+}
+.toFromText {
+  gap: 1%;
+}
+.dotLine {
+  margin-left: 0.3%;
+}
+.seat {
+  position: absolute;
+  font-size: 0.9rem;
+}
+.seat1 {
+  /* position: absolute; */
+  top: 45%;
+  left: 82%;
+}
+.seat2 {
+  /* position: static; */
+  top: 70%;
+  left: 82%;
+}
+.seat3 {
+  /* position: static; */
+  top: 94%;
+  left: 82%;
+}
+</style>

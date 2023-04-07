@@ -6,6 +6,7 @@ import { useBookingStore } from "../../stores/booking";
 import { useRouter } from "vue-router";
 import { usePassengerStore } from "../../stores/passenger";
 import { useGuestStore } from "../../stores/guest";
+import TimeStamp from "../../components/atoms/TimeStamp.vue";
 
 interface User {
   id: String;
@@ -75,7 +76,7 @@ const guestStore = useGuestStore();
 const guestData = computed(() => {
   return (guestStore as any).guestData;
 });
-console.log(guestData.value)
+console.log(guestData.value);
 
 // 搭乗者情報取得
 const passengerStore = usePassengerStore();
@@ -89,9 +90,10 @@ const passengerData = computed(() => {
 });
 
 console.log(passengerData.value);
-passengerData.value.map((passenger:PassengerPinia)=>{
-  console.log(passenger.first_name)
-})
+
+// passengerData.value.map((passenger:PassengerPinia)=>{
+//   console.log(passenger.first_name)
+// })
 
 // console.log(passengerId.value);
 // const getPassenger = async () => {
@@ -141,8 +143,6 @@ const selectedPassenger: ComputedRef<number> = computed(() => {
 });
 // choosePassengerNum.value = selectedPassenger.value;
 
-
-
 // }); //onBeforeMount
 
 // 合計金額計算する
@@ -156,11 +156,13 @@ const totalPrice = computed(() => {
 
 // 予約確定ボタン
 const confirmed = async () => {
-  const nowDate = new Date().toLocaleString("ja-JP", {timeZone: "Europe/London"})
-  console.log(new Date(nowDate).toString())
+  const nowDate = new Date().toLocaleString("ja-JP", {
+    timeZone: "Europe/London",
+  });
+  console.log(new Date(nowDate).toString());
 
   if (currentUser.value !== null) {
-    console.log("会員")
+    console.log("会員");
     // 会員の場合
     //reservationsに追加する
     const response = await fetch("http://localhost:3000/reservations", {
@@ -184,41 +186,40 @@ const confirmed = async () => {
     console.log(reservationData);
 
     // usersテーブルのreservationsを更新する→reservationsテーブルのuser_idで既に紐付けされてる
-      // const updateUser = await fetch(
-      //   `http://localhost:3000/users${uid.value}`,
-      //   {
-      //     method: "PUT",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       reservations: reservationData.id,
-      //     }),
-      //   }
-      // );
-      // const updateUserData = await updateUser.json();
-      passengerData.value.map(async(passenger:PassengerPinia)=>{
-
+    // const updateUser = await fetch(
+    //   `http://localhost:3000/users${uid.value}`,
+    //   {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       reservations: reservationData.id,
+    //     }),
+    //   }
+    // );
+    // const updateUserData = await updateUser.json();
+    passengerData.value.map(async (passenger: PassengerPinia) => {
       // 搭乗者情報をpassengersに追加する
-    const addPassenger = await fetch("http://localhost:3000/passengers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // あとで！！一つ一つではなく、配列をmap回しながら要素指定する必要がありそう
-      body: JSON.stringify({
-        first_name: passenger.first_name,
-        last_name: passenger.last_name,
-        date_of_birth: new Date(passenger.date_of_birth),
-        gender: passenger.gender,
-        reservation_id: reservationData.id,
-      }),
+      const addPassenger = await fetch("http://localhost:3000/passengers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // あとで！！一つ一つではなく、配列をmap回しながら要素指定する必要がありそう
+        body: JSON.stringify({
+          first_name: passenger.first_name,
+          last_name: passenger.last_name,
+          date_of_birth: new Date(passenger.date_of_birth),
+          gender: passenger.gender,
+          reservation_id: reservationData.id,
+        }),
+      });
+      const addPassengerData = await addPassenger.json();
+      console.log(addPassengerData);
     });
-    const addPassengerData = await addPassenger.json();
-    console.log(addPassengerData);
-  })
   } else {
-    console.log("ゲスト")
+    console.log("ゲスト");
     // reservationsに追加する
     const guestResponse = await fetch("http://localhost:3000/reservations", {
       method: "POST",
@@ -239,7 +240,6 @@ const confirmed = async () => {
     });
     const guestReservationData = await guestResponse.json();
     console.log(guestReservationData);
-
 
     // passenger追加
     const addGuestPassenger = await fetch("http://localhost:3000/passengers", {
@@ -265,38 +265,148 @@ const confirmed = async () => {
   guestStore.$reset();
 
   // 予約完了画面に遷移
-  router.push("/completed")
+  router.push("/completed");
 }; //confirmedボタン
 </script>
 
 <template>
-  <h1>最終確認</h1>
-  <h2>予約者情報確認</h2>
-  <div v-if="currentUser !== null">
-  <p>苗字：{{ loginUserData.last_name }}</p>
-  <p>名前：{{ loginUserData.first_name }}</p>
-  <p>電話番号：{{ loginUserData.phone }}</p>
+  <div class="wrapper">
+    <div class="text-h5">最終確認</div>
+    <div class="ConfirmationWrapper">
+      <section class="my-5">
+        <p class="text-h6">
+          <v-icon icon="mdi-airplane"></v-icon>
+          ご予約便情報
+        </p>
+        <v-table>
+          <thead>
+            <tr>
+              <th>搭乗日</th>
+              <th>便名</th>
+              <th>出発地</th>
+              <th>出発時間</th>
+              <th>到着地</th>
+              <th>到着時間</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><TimeStamp :date="selectedDate" /></td>
+              <td>{{ flightData.flight }}</td>
+              <td>{{ flightData.from }}</td>
+              <td>{{ flightData.departure_time }}</td>
+              <td>{{ flightData.from }}</td>
+              <td>{{ flightData.arrival_time }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </section>
+      <section class="my-5">
+        <p class="text-h6">
+          <v-icon icon="mdi-seat-passenger"></v-icon>
+          ご搭乗者情報
+        </p>
+        <v-table>
+          <thead>
+            <tr>
+              <th>ご搭乗者</th>
+              <th>お名前</th>
+              <th>生年月日</th>
+              <th>性別</th>
+              <th>料金</th>
+            </tr>
+          </thead>
+          <tbody v-if="passengerData.length >= 2">
+            <tr v-for="(passenger, index) in passengerData" :key="passenger">
+              <td>{{ index + 1 }}</td>
+              <td>{{ passenger.first_name }}&nbsp;{{ passenger.last_name }}</td>
+              <td><TimeStamp :date="passenger.date_of_birth" /></td>
+              <td>{{ passenger.gender }}</td>
+              <td>¥{{ flightData.price }}</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <td>1</td>
+              <td>
+                {{ passengerData.first_name }}&nbsp;{{
+                  passengerData.last_name
+                }}
+              </td>
+              <td><TimeStamp :date="passengerData.date_of_birth" /></td>
+              <td>{{ passengerData.gender }}</td>
+              <td>¥{{ flightData.price.toLocaleString() }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </section>
+      <section class="my-5">
+        <p class="text-h6">
+          <v-icon icon="mdi-account"></v-icon>
+          ご予約者情報
+        </p>
+        <v-table>
+          <thead>
+            <tr>
+              <th>お名前</th>
+              <th>生年月日</th>
+              <th>性別</th>
+              <th>メールアドレス</th>
+              <th>電話番号</th>
+            </tr>
+          </thead>
+          <tbody v-if="currentUser !== null">
+            <tr>
+              <td>
+                {{ loginUserData.first_name }}&nbsp;{{
+                  loginUserData.last_name
+                }}
+              </td>
+              <td>
+                <TimeStamp :date="loginUserData.date_of_birth" />
+              </td>
+              <td>{{ loginUserData.gender }}</td>
+              <td>{{ loginUserData.email }}</td>
+              <td>{{ loginUserData.phone }}</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <td>{{ guestData.first_name }}&nbsp;{{ guestData.last_name }}</td>
+              <td>
+                <TimeStamp :date="guestData.date_of_birth" />
+              </td>
+              <td>{{ guestData.gender }}</td>
+              <td>{{ guestData.email }}</td>
+              <td>{{ guestData.phone }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </section>
+      <div class="text-h6 text-right my-5">
+        合計金額:&nbsp;¥{{ totalPrice.toLocaleString() }}
+      </div>
+      <div class="text-center mb-5">
+        <v-btn @click="confirmed" color="#3498db"
+          ><span class="btnText">予約確定</span></v-btn
+        >
+      </div>
+    </div>
   </div>
-  <div v-else>
-  <p>苗字：{{ guestData.last_name }}</p>
-  <p>名前：{{ guestData.first_name }}</p>
-  <p>電話番号：{{ guestData.phone }}</p>
-  </div>
-
-  <h2>搭乗者情報確認</h2>
-  <div v-for="(passenger, index) in passengerData" :key="passenger">
-  <h3>搭乗者{{ index+1 }}</h3>
-  <p>名前：{{ passenger.first_name }}:&nbsp;{{ passenger.last_name }}</p>
-  <p>生年月日:{{ passenger.date_of_birth }}</p>
-  <p>性別：{{ passenger.gender }}</p>
-</div>
-
-  <h2>予約内容確認</h2>
-  <p>{{ flightData.flight }}便</p>
-  <p>出発日：{{ selectedDate }}</p>
-  <p>出発時間：{{ flightData.departure_time }}</p>
-  <p>到着時間：{{ flightData.arrival_time }}</p>
-  <p>人数：{{ selectedPassenger }}</p>
-  <p>合計金額：{{ totalPrice }}</p>
-  <v-btn @click="confirmed">予約確定</v-btn>
 </template>
+
+<style scoped>
+.wrapper {
+  width: 75%;
+  margin: 0 auto;
+}
+.ConfirmationWrapper {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 1%;
+  margin-top: 5%;
+}
+.btnText {
+  color: #ffff;
+  font-weight: bold;
+}
+</style>

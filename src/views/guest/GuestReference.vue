@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onUnmounted } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useGuestReservationStore } from "../../stores/guestReservation";
+import ReferenceTable from "../../components/molecules/ReferenceTable.vue"
 
 const router = useRouter();
 
@@ -33,15 +34,14 @@ if(currentPath.value !== "/guestReference"){
 </script>
 
 <template>
-  <div>ご予約の確認</div>
-
   <template v-if="reservationData.length === 0">
     <p>該当するデータはありません</p>
     <v-btn @click="backBtn">戻る</v-btn>
   </template>
 
   <template v-else>
-    <div>
+    <ReferenceTable :reservationData="reservationData[0]" />
+    <!-- <div>
       <p>ご予約内容</p>
       <div>
         <p>お支払い状態</p>
@@ -93,7 +93,6 @@ if(currentPath.value !== "/guestReference"){
       >
         <div>
           <p>ご搭乗者</p>
-          <!-- indexがいい -->
           <p>大人1</p>
         </div>
         <div>
@@ -121,6 +120,6 @@ if(currentPath.value !== "/guestReference"){
         <p>メールアドレス</p>
         <p>{{ reservationData[0].guests.email }}</p>
       </div>
-    </div>
+    </div> -->
   </template>
 </template>

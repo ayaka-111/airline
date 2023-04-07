@@ -118,7 +118,8 @@ const addUser = async () => {
 </script>
 
 <template>
-  <h1>会員登録</h1>
+  <div class="wrapper">
+  <div class="text-h5 text-center mb-3">会員登録</div>
   <v-form @submit.prevent="addUser">
     <!-- <div>
       <label for="firstName">FirstName:</label>
@@ -241,8 +242,23 @@ const addUser = async () => {
         hint="確認のためもう一度入力してください"
       ></v-text-field>
     </v-responsive>
-    <div>
-      <v-btn rounded="pill" color="#4682B4" type="submit">登録</v-btn>
+    <div class="text-center mt-10">
+      <v-btn rounded="pill" color="#3498db" type="submit"><span class="btnText">登録</span></v-btn>
     </div>
   </v-form>
+</div>
 </template>
+
+<style scoped>
+.wrapper {
+  width: 75%;
+  margin: 0 auto;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 1%;
+  margin-top: 10%;
+}
+.btnText {
+  font-weight: bold;
+  color: #ffff;
+}
+</style>
