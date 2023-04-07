@@ -62,5 +62,18 @@ export default defineComponent({
 
 <template>
   <!-- 満席の場合予約できないようにする -->
-  <v-btn @click="selectedBtn">{{ price }}</v-btn>
+  <v-btn @click="selectedBtn" class="btn" size="x-large"><span class="font-weight-bold btnText">¥{{ price?.toLocaleString() }}</span></v-btn>
 </template>
+
+<style scoped>
+.btn {
+  background-color: #3498db;
+  color: #ffff;
+  /* width: 15%;
+  padding: 3.5%; */
+}
+.btnText {
+  align-items: center;
+  /* font-size: 1.2rem; */
+}
+</style>

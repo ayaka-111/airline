@@ -71,7 +71,8 @@ const addGuest = async () => {
 </script>
 
 <template>
-  <h1>ゲスト</h1>
+  <div class="wrapper">
+  <div class="text-h5 text-center mb-3">予約者情報</div>
   <v-form @submit.prevent="addGuest">
     <v-responsive class="mx-auto" max-width="344">
       <v-text-field
@@ -126,8 +127,23 @@ const addGuest = async () => {
         hint="ハイフン不要"
       ></v-text-field>
     </v-responsive>
-    <div>
-      <v-btn rounded="pill" color="#4682B4" type="submit">次へ</v-btn>
+    <div class="text-center mt-10 mb-5">
+      <v-btn rounded="pill" color="#3498db" type="submit"><span class="btnText">次へ</span></v-btn>
     </div>
   </v-form>
+</div>
 </template>
+
+<style scoped>
+.wrapper {
+  width: 75%;
+  margin: 0 auto;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 1%;
+  margin-top: 5%;
+}
+.btnText {
+  font-weight: bold;
+  color: #ffff;
+}
+</style>

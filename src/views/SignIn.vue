@@ -57,33 +57,55 @@ const loginButton = async () => {
 </script>
 
 <template>
-  <h1>ログイン</h1>
-  <v-form @submit.prevent>
-    <!-- メールアドレス： -->
-    <!-- <input type="email" v-model="user.email"/> -->
-    <v-responsive class="mx-auto" max-width="344">
-      <v-text-field
-        hide-details="auto"
-        label="Email address"
-        placeholder="johndoe@gmail.com"
-        type="email"
-        v-model="user.email"
-        hint="登録済みのメールアドレスを入力してください"
-      ></v-text-field>
-    </v-responsive>
-    <!-- パスワード： -->
-    <!-- <input type="password" v-model="user.password
+  <div class="wrapper">
+    <div class="text-h5 text-center mb-5">ログイン</div>
+    <v-form @submit.prevent>
+      <!-- メールアドレス： -->
+      <!-- <input type="email" v-model="user.email"/> -->
+      <v-responsive class="mx-auto" max-width="344">
+        <v-text-field
+          hide-details="auto"
+          label="Email address"
+          placeholder="johndoe@gmail.com"
+          type="email"
+          v-model="user.email"
+          hint="登録済みのメールアドレスを入力してください"
+        ></v-text-field>
+      </v-responsive>
+      <!-- パスワード： -->
+      <!-- <input type="password" v-model="user.password
     "/> -->
-    <v-responsive class="mx-auto" max-width="344">
-      <v-text-field
-        hide-details="auto"
-        label="Password"
-        placeholder="john123"
-        type="password"
-        v-model="user.password"
-      ></v-text-field>
-    </v-responsive>
-    <!-- <button @click="loginButton">ログイン</button> -->
-    <v-btn rounded="pill" color="#4682B4" @click="loginButton">ログイン</v-btn>
-  </v-form>
+      <v-responsive class="mx-auto" max-width="344">
+        <v-text-field
+          hide-details="auto"
+          label="Password"
+          placeholder="john123"
+          type="password"
+          v-model="user.password"
+        ></v-text-field>
+      </v-responsive>
+      <!-- <button @click="loginButton">ログイン</button> -->
+      <div class="text-center mt-10">
+        <v-btn rounded="pill" color="#3498db" class="btn" @click="loginButton"
+          ><span class="btnText">ログイン</span></v-btn
+        >
+      </div>
+    </v-form>
+  </div>
 </template>
+
+<style scoped>
+.wrapper {
+  width: 75%;
+  margin: 0 auto;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 1%;
+  margin-top: 10%;
+}
+.btn {
+  color: #ffff;
+}
+.btnText {
+  font-weight: bold;
+}
+</style>

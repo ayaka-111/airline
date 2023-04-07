@@ -53,14 +53,17 @@ const nowDateTime = new Date();
 // 当日
 // const nowDate = ref<string>(nowDateTime.toISOString().slice(0, 10));
 // 次の日
-const minimumReservableDays = new Date(nowDateTime.setDate(nowDateTime.getDate() + 1));
+const minimumReservableDays = new Date(
+  nowDateTime.setDate(nowDateTime.getDate() + 1)
+);
 const minYear = minimumReservableDays.getFullYear();
 const minMonth = ("0" + (minimumReservableDays.getMonth() + 1)).slice(-2);
 const minDay = ("0" + minimumReservableDays.getDate()).slice(-2);
 const minimumReservableDate = `${minYear}-${minMonth}-${minDay}`;
 // 1ヶ月後
 const maximumReservableDays = new Date(
-  nowDateTime.setMonth(nowDateTime.getMonth() + 1));
+  nowDateTime.setMonth(nowDateTime.getMonth() + 1)
+);
 const year = maximumReservableDays.getFullYear();
 const month = ("0" + (maximumReservableDays.getMonth() + 1)).slice(-2);
 const day = ("0" + maximumReservableDays.getDate()).slice(-2);
@@ -70,7 +73,10 @@ const maximumReservableDate = `${year}-${month}-${day}`;
 // const dataList = ref();
 const search = () => {
   console.log(
-    `from：${from.value}to：${to.value}人数：${numberOfPeople.value}日付：${date.value}new:${new Date(date.value)}`);
+    `from：${from.value}to：${to.value}人数：${numberOfPeople.value}日付：${
+      date.value
+    }new:${new Date(date.value)}`
+  );
 
   // const getResults = async () => {
   //   const response = await fetch(
@@ -117,7 +123,7 @@ const search = () => {
 
   <div class="searchContent">
     <div class="searchItems">
-      <template v-if="destinationArrow">
+      <div class="toFrom" v-if="destinationArrow">
         <div class="searchText">
           <p class="searchTitle">出発地</p>
           <p>
@@ -147,8 +153,8 @@ const search = () => {
             >{{ to }}
           </p>
         </div>
-      </template>
-      <template v-else>
+      </div>
+      <div class="toFrom" v-else>
         <div class="searchText">
           <p class="searchTitle">出発地</p>
           <p>
@@ -178,23 +184,37 @@ const search = () => {
             >{{ to }}
           </p>
         </div>
-      </template>
+      </div>
       <v-responsive max-width="180">
         <div class="peopleField">
-          <p>人数</p>
+          <p class="peopleText">人数</p>
           <div class="peopleForm">
             <v-btn
               icon="mdi-minus-circle-outline"
               variant="text"
               @click="peopleMinusBtn"
-              v-if="numberOfPeople >= 1"
+              color="#3498db"
+              v-if="numberOfPeople > 1"
             ></v-btn>
-            <v-bt icon="mdi-minus-circle-outline" variant="text" color="lightgray" v-else></v-bt>
+            <v-btn
+              icon="mdi-minus-circle-outline"
+              variant="text"
+              color="#c0c0c0"
+              v-else
+            ></v-btn>
             <p class="numberOfPeople">{{ numberOfPeople }}</p>
             <v-btn
               icon="mdi-plus-circle-outline"
               variant="text"
               @click="peoplePlusBtn"
+              color="#3498db"
+              v-if="numberOfPeople < 6"
+            ></v-btn>
+            <v-btn
+              icon="mdi-plus-circle-outline"
+              variant="text"
+              color="#c0c0c0"
+              v-else
             ></v-btn>
           </div>
         </div>
@@ -225,17 +245,25 @@ const search = () => {
   margin: 0 auto;
 }
 .searchContent {
-  width: 900px;
+  width: 980px;
   margin: 5% auto;
   text-align: center;
+  padding: 10px 40px;
+  box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.2);
 }
 .searchItems {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+.toFrom {
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+
+}
 .searchText {
-  width: 20%;
+  width: 40%;
   border: 1px solid #3498db;
   padding: 5px;
   border-radius: 4%;
@@ -248,13 +276,17 @@ const search = () => {
 }
 .peopleField {
   border: 1px solid #3498db;
-  color: #3498db;
+  /* color: #3498db; */
   border-radius: 4%;
+}
+.peopleText {
+  color: #3498db;
 }
 .peopleForm {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 38px;
 }
 .numberOfPeople {
   color: black;
@@ -267,6 +299,10 @@ const search = () => {
   color: #3498db;
   padding: 10px;
 }
+.date.v-text-field  >>> input{
+  color: black !important;
+}
+
 .searchBtn {
   background-color: #3498db;
   color: #ffff;

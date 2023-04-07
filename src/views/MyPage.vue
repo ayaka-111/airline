@@ -5,6 +5,7 @@ import { useAuthStore } from "../stores/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase/index";
 import { useRouter } from "vue-router";
+import TimeStamp from "../components/atoms/TimeStamp.vue";
 
 interface Users {
   id: string;
@@ -87,6 +88,8 @@ const uid = computed(() => {
 
 // getUser();
 
+const loading = ref(true);
+
 onAuthStateChanged(auth, async (currentUser) => {
   if (currentUser) {
     const response = await fetch(
@@ -95,6 +98,7 @@ onAuthStateChanged(auth, async (currentUser) => {
     const data = await response.json();
     console.log(data);
     reservations.value = data;
+    loading.value = false;
   } else {
     console.log("ログアウト状態");
   }
@@ -122,118 +126,61 @@ onAuthStateChanged(auth, async (currentUser) => {
 </script>
 
 <template>
-  <h1>マイページ</h1>
-  <p>{{ uid }}</p>
-  <div>
-    <h2>予約一覧</h2>
-    <div v-for="reservation in reservations" :key="reservation.id">
-      <RouterLink
-        v-bind:to="{ name: 'Reference', params: { id: reservation.id } }"
-      >
-        {{ reservation.flight.flight }}便
-      </RouterLink>
-      <p>予約日{{ new Date(reservation.appointment_date).toISOString() }}</p>
-      <p>出発日{{ reservation.flight_date }}</p>
-
-      <!-- <p>
-              予約者名{{ reservation.users.first_name }}
-              {{ reservation.users.last_name }}
-            </p>
-            <p>合計金額{{ reservation.total_price }}</p>
-            <template
-              v-for="passenger in reservation.passengers"
-              :key="passenger.id">
-              <p>
-                搭乗者名{{ passenger.first_name }} {{ passenger.last_name }}
-              </p>
-            </template> -->
+  <template v-if="loading">
+    <v-card height="190" class="text-center">
+      <v-progress-circular
+        :size="100"
+        indeterminate
+        color="#3498db"
+        class="mt-4"
+        >Loading...
+      </v-progress-circular>
+    </v-card>
+  </template>
+  <template v-else>
+    <div class="wrapper">
+      <div class="text-h5 text-center">MyPage</div>
+      <div>
+        <div class="text-h6 mt-5">予約履歴</div>
+        <div v-for="reservation in reservations" :key="reservation.id">
+          <RouterLink
+            v-bind:to="{ name: 'Reference', params: { id: reservation.id } }"
+            class="h-100"
+          >
+            <div class="reservationWrapper d-flex">
+              {{ reservation.flight.flight }}便
+              <div class="d-flex dateContents">
+                <div>
+                  <p class="text-subtitle-2">ご予約日</p>
+                  <TimeStamp :date="reservation.appointment_date" />
+                </div>
+                <div>
+                  <p class="text-subtitle-2">出発日</p>
+                  <TimeStamp :date="reservation.flight_date" />
+                </div>
+              </div>
+            </div>
+          </RouterLink>
+        </div>
+      </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <style scoped>
-/* モーダルウィンドウを開く要素 */
-.modal_open_btn {
-  cursor: pointer;
+.wrapper {
+  width: 75%;
+  margin: 0 auto;
 }
-/* モーダルウィンドウ要素 */
-.modal_contents {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  width: 100%;
-  height: 100%;
-  width: 100%;
+.reservationWrapper {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 3%;
+  gap: 15%;
 }
-/* モーダルウィンドウの背景要素 */
-.modal_contents_bg {
-  background: rgba(0, 0, 0, 0.8);
-  width: 100%;
-  height: 100%;
+.reservationWrapper:hover {
+  background-color: #f0f8ff;
 }
-/* モーダルウィンドウの中身*/
-.modal_contents_wrap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background-color: #fff;
-  width: 25%;
-  height: 30%;
-  margin: auto;
-  transform: translate(-50%, -50%);
-  border-radius: 5%;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
-.deleteBtn {
-  height: 33%;
-  color: red;
-  font-weight: bold;
-}
-.deleteModal_contents_wrap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background-color: #fff;
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  transform: translate(-50%, -50%);
-  border-radius: 5%;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
-.deleteModal_title {
-  height: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.deleteText {
-  color: gray;
-}
-.deleteModal_deleteBtn {
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
-  color: red;
-  font-weight: bold;
-  height: 25%;
-}
-.deleteModal_close_btn {
-  cursor: pointer;
-  height: 25%;
-}
-.updateBtn {
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
-  height: 33%;
-}
-/* モーダルウィンドウを閉じる要素 */
-.modal_close_btn {
-  cursor: pointer;
-  height: 33%;
+.dateContents {
+  gap: 65%;
 }
 </style>
